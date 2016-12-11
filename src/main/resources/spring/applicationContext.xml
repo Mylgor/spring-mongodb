@@ -17,27 +17,21 @@
     помеченные аннотациями @Service, @Repository, и создавать их бины, но исключать он будет @Controller,
     т.к. эти классы нам нужны будут в другом месте.
     -->
-    <context:component-scan base-package="ru.habrahabr">
+    <context:component-scan base-package="com.dvasyukov">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
     <!--
     Загружает properties файл в конфигурацию Spring (т.е. сюда).
-    Переменные из файла можно будет использовать как ${mongo.host} (пример см. ниже)
     -->
     <context:property-placeholder location="classpath:database.properties"/>
 
     <!-- Создаем бин 'mongo' -->
     <mongo:mongo host="${mongo.host}" port="${mongo.port}"/>
 
-    <!--
-    Создаем бин 'mongoDbFactory'.
-    Если MongoDB не требует авторизации, то поля username, password можно убрать
-    -->
     <mongo:db-factory
             dbname="${mongo.db}"
             mongo-ref="mongo"/>
-
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
     </bean>

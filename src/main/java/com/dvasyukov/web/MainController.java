@@ -1,57 +1,55 @@
-package ru.habrahabr.web;
+package com.dvasyukov.web;
 
+import com.dvasyukov.model.Instrument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
-import ru.habrahabr.services.ContactService;
-import ru.habrahabr.model.Contact;
+import com.dvasyukov.services.InstrumentService;
 
-/**
- * Date: 26.03.2014
- * Time: 20:30
- *
- * @author Ruslan Molchanov (ruslanys@gmail.com)
- */
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class MainController {
-    @Autowired private ContactService contactService;
+    @Autowired private InstrumentService instrumentService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView showAll() {
         ModelAndView modelAndView = new ModelAndView("all");
 
-        modelAndView.addObject("contacts", contactService.getAll());
+        modelAndView.addObject("instruments", instrumentService.getAll());
 
         return modelAndView;
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public ModelAndView showAddForm() {
-        return new ModelAndView("add_form", "contact", new Contact());
+        return new ModelAndView("add_form", "instrument", new Instrument());
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addContact(@ModelAttribute("contact") Contact contact) {
-        if(contact.getId() == null) {
-            contactService.add(contact);
+    public String addInstrument(@ModelAttribute("instrument") Instrument instrument) {
+        if(instrument.getId() == null) {
+            instrumentService.add(instrument);
         } else {
-            contactService.update(contact);
+            instrumentService.update(instrument);
         }
         return "redirect:/";
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public ModelAndView showEditForm(@RequestParam(required = true) Long id) {
-        return new ModelAndView("add_form", "contact", contactService.get(id));
+        return new ModelAndView("add_form", "instrument", instrumentService.get(id));
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public String deleteContact(@RequestParam(required = true) Long id) {
-        contactService.remove(id);
+    public String deleteInstrument(@RequestParam(required = true) Long id) {
+        instrumentService.remove(id);
 
         return "redirect:/";
     }

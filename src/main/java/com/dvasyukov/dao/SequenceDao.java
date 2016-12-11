@@ -1,5 +1,6 @@
-package ru.habrahabr.dao;
+package com.dvasyukov.dao;
 
+import com.dvasyukov.exceptions.SequenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -7,13 +8,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-import ru.habrahabr.exceptions.SequenceException;
-import ru.habrahabr.model.Sequence;
+import com.dvasyukov.model.Sequence;
 
-/**
- * Этот код взят с сайта mkyong,
- * точную ссылку найти не смог
- */
 @Repository
 public class SequenceDao {
     @Autowired private MongoOperations mongoOperations;

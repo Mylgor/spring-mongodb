@@ -3,25 +3,26 @@
 
 <html>
 <head>
-    <title>Все контакты</title>
+    <title>Все инструменты</title>
 </head>
 <body>
-<img src="/resources/logo.png"><br/>
 <table width="600px">
     <tr>
         <td><b>ID</b></td>
         <td><b>Name</b></td>
-        <td><b>Number</b></td>
-        <td><b>E-mail</b></td>
+        <td><b>Type</b></td>
+        <td><b>Price</b></td>
+        <td><b>Date</b></td>
         <td><b>Action</b></td>
     </tr>
-    <c:forEach var="contact" items="${contacts}">
+    <c:forEach var="instrument" items="${instruments}">
         <tr>
-            <td>${contact.id}</td>
-            <td>${contact.name}</td>
-            <td>${contact.number}</td>
-            <td>${contact.email}</td>
-            <td><a href="/edit?id=${contact.id}">Edit</a> | <a href="/delete?id=${contact.id}">Delete</a></td>
+            <td>${instrument.id}</td>
+            <td>${instrument.name}</td>
+            <td>${instrument.type}</td>
+            <td>${instrument.price}</td>
+            <td>${instrument.dateAdded}</td>
+            <td><a href="/edit?id=${instrument.id}">Edit</a> | <a href="/delete?id=${instrument.id}">Delete</a></td>
         </tr>
     </c:forEach>
     <tr>
