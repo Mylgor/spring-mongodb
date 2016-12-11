@@ -5,20 +5,24 @@
     <title>Добавить контакт</title>
 </head>
 <body>
-<form:form method="POST" action="/add" modelAttribute="contact">
-    <form:hidden path="id" />
+<form:form method="POST" action="/add" modelAttribute="instrument">
+    <form:hidden path="Id" />
     <table>
         <tr>
             <td>Name:</td>
-            <td><form:input path="name" /></td>
+            <td><form:input path="Name" /></td>
         </tr>
         <tr>
-            <td>Number:</td>
-            <td><form:input path="number" /></td>
+            <td>Type:</td>
+            <td><form:input path="Type" /></td>
         </tr>
         <tr>
-            <td>E-mail:</td>
-            <td><form:input path="email" /></td>
+            <td>Price:</td>
+            <td><form:input path="Price" /></td>
+        </tr>
+        <tr>
+            <td>Date of manufacture:</td>
+            <td><form:input path="DateAdded" /></td>
         </tr>
         <tr>
             <td colspan="2">
