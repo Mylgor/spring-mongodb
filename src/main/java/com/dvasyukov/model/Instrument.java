@@ -14,14 +14,15 @@ public class Instrument {
 
     private String Name;
     private String Type;
-    private String Price;
-    private String DateAdded;
+    private int Price;
+    private Date DateAdded;
 
     public Instrument(){}
 
-    public Instrument(Long id, String name, String price, String dateAdded) {
-        Id = id;
+    public Instrument(String name, String type, int price, Date dateAdded) {
+        //Id = id;
         Name = name;
+        Type = type;
         Price = price;
         DateAdded = dateAdded;
     }
@@ -50,19 +51,41 @@ public class Instrument {
         Name = name;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return Price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         Price = price;
     }
 
-    public String getDateAdded() {
+    public Date getDateAdded() {
         return DateAdded;
     }
 
-    public void setDateAdded(String dateAdded) {
+    public void setDateAdded(Date dateAdded) {
         DateAdded = dateAdded;
+    }
+
+    @Override
+    public final String toString() {
+        String text = "";
+        String closeP = "</p>";
+
+        if (Name != null) {
+            text += "<p>Name: " + Name + closeP;
+        }
+        if (Type != null) {
+            text += "<p>Type: " + Type + closeP;
+        }
+        if (Price != 0) {
+            text += "<p>Price: " + Price + closeP;
+        }
+        if (DateAdded != null){
+            text += "<p>Date added: " + DateAdded + closeP;
+        }
+
+
+        return text;
     }
 }

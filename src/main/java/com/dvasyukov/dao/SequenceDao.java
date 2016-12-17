@@ -15,10 +15,8 @@ public class SequenceDao {
     @Autowired private MongoOperations mongoOperations;
 
     public Long getNextSequenceId(String key) {
-        // получаем объект Sequence по наименованию коллекции
         Query query = new Query(Criteria.where("id").is(key));
 
-        // увеличиваем поле sequence на единицу
         Update update = new Update();
         update.inc("sequence", 1);
 
@@ -26,10 +24,8 @@ public class SequenceDao {
         FindAndModifyOptions options = new FindAndModifyOptions();
         options.returnNew(true);
 
-        // немного магии :)
         Sequence sequence = mongoOperations.findAndModify(query, update, options, Sequence.class);
 
-        // если не нашли такой sequence, выбросить исключение
         if(sequence == null) {
             throw new SequenceException("Unable to get sequence for key: " + key);
         }
