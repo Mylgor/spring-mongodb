@@ -16,16 +16,17 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class InstrumentService {
+public class InstrumentService implements Runnable{
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     private static final int MAX_ELEMENT_IN_FILED = 20;
 
     @Autowired private SequenceDao sequenceDao;
     @Autowired private InstrumentDao instrumentDao;
 
-    private void add(Instrument instrument) {
+    public void add(Instrument instrument) {
         instrument.setId(sequenceDao.getNextSequenceId(Instrument.COLLECTION_NAME));
         instrumentDao.save(instrument);
+        log.info("Success save in db");
     }
 
     public void update(Instrument instrument) {
@@ -45,7 +46,7 @@ public class InstrumentService {
     }
 
 
-    public void addRecordInDb(HttpServletRequest request) {
+    public Instrument checkData(HttpServletRequest request){
         String name = request.getParameter("nameInst");
         String type = request.getParameter("typeInst");
         String price = request.getParameter("priceInst");
@@ -70,9 +71,9 @@ public class InstrumentService {
                 instrument.setType(type);
                 instrument.setPrice(mPrice);
                 instrument.setDateAdded(date);
-                this.add(instrument);
 
                 request.setAttribute(messageBox, "Success addition");
+                return instrument;
             }
 
         } catch (NumberFormatException ex) {
@@ -85,6 +86,7 @@ public class InstrumentService {
             request.setAttribute(messageBox, "Error addition");
             log.info(errMessage + ex.getMessage());
         }
+        return null;
     }
 
     private boolean isStringNotEmpty(String str) {
@@ -104,5 +106,10 @@ public class InstrumentService {
             throw new InstantiationException("Empty fields");
         }
         return true;
+    }
+
+    @Override
+    public void run() {
+
     }
 }
