@@ -7,6 +7,8 @@ import com.dvasyukov.web.MainController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,19 +16,22 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 
 @Service
-public class InstrumentService implements Runnable{
+public class InstrumentService{
     private static final Logger log = LoggerFactory.getLogger(MainController.class);
     private static final int MAX_ELEMENT_IN_FILED = 20;
 
     @Autowired private SequenceDao sequenceDao;
     @Autowired private InstrumentDao instrumentDao;
 
-    public void add(Instrument instrument) {
+    @Async
+    public Future<Boolean> asyncAdd(Instrument instrument) throws InterruptedException {
         instrument.setId(sequenceDao.getNextSequenceId(Instrument.COLLECTION_NAME));
         instrumentDao.save(instrument);
         log.info("Success save in db");
+        return new AsyncResult<Boolean>(true);
     }
 
     public void update(Instrument instrument) {
@@ -106,10 +111,5 @@ public class InstrumentService implements Runnable{
             throw new InstantiationException("Empty fields");
         }
         return true;
-    }
-
-    @Override
-    public void run() {
-
     }
 }

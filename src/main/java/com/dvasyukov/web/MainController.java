@@ -12,13 +12,10 @@ import com.dvasyukov.services.InstrumentService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.concurrent.CountDownLatch;
 
 import com.dvasyukov.model.Instrument;
+
+import java.util.concurrent.Future;
 
 
 @Controller
@@ -28,45 +25,42 @@ public class MainController {
 
     @Autowired
     private InstrumentService instrumentService;
+    private OtherService leftSiteService = new OtherService("http://example.com/");
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView showAll() {
-
+    public ModelAndView showAll() throws Exception{
         ModelAndView modelAndView = new ModelAndView("index");
 
-        try {
-            //Get text from site
-            OtherService siteService = new OtherService();
-            siteService.setUrl("http://example.com/");
-            Thread thread = new Thread(siteService);
-            thread.start();
+        Future<String> asyncText = leftSiteService.getTextFromSite();
+        log.info("Get all instruments. Thread: " + Thread.currentThread().getName());
+        modelAndView.addObject("instruments", instrumentService.getAll());
 
-            modelAndView.addObject("instruments", instrumentService.getAll());
-
-            thread.join();
-            modelAndView.addObject("siteText", siteService.getText());
-        } catch (Exception ex){
-          log.error(ex.getMessage());
+        while (!asyncText.isDone()){
+            log.info("Sleep thread!");
+            Thread.sleep(10);
         }
+        modelAndView.addObject("siteText", asyncText.get());
         return modelAndView;
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String addInstrument(final HttpServletRequest request, HttpServletResponse response) {
+    public String addInstrument(final HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         //Проверяем корректность данных
-        final Instrument intrument = instrumentService.checkData(request);
-        if (intrument != null){
-            //Пишем!
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    instrumentService.add(intrument);
-                }
-            }).start();
+        Instrument instrument = instrumentService.checkData(request);
+        Future<Boolean> asyncSave = null;
+        if (instrument != null){
+            asyncSave = instrumentService.asyncAdd(instrument);
         }
 
-        log.info("End POST request");
+        log.info("Simple comment for check thread. Thread:" + Thread.currentThread().getName());
+        if (asyncSave != null) {
+            while (!asyncSave.isDone()) {
+                log.info("Sleep thread!");
+                Thread.sleep(10);
+            }
+            asyncSave.get();
+        }
         return "redirect:/";
     }
 }

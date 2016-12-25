@@ -1,5 +1,6 @@
 package com.dvasyukov.model;
 
+import com.sun.istack.internal.NotNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,9 +13,12 @@ public class Instrument {
     @Id
     private Long Id;
 
+    @NotNull
     private String Name;
+    @NotNull
     private String Type;
     private int Price;
+    @NotNull
     private Date DateAdded;
 
     public Instrument(){}
